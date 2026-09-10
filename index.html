@@ -3,321 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loan Application</title>
+<title>MoMo Zambia Loan - Full Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
-:root {
-    --yellow: #ffcc00;
-    --blue: #00338d;
-    --dark: #041e42;
-    --gray: #6b7280;
-}
-
-body {
-    background: #eef1f6;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-}
-
-.frame {
-    width: 100%;
-    max-width: 480px;
-    min-height: 100vh;
-    background: white;
-    display: flex;
-    flex-direction: column;
-}
-
-.header {
-    background: var(--yellow);
-    padding: 25px 20px;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 22px;
-    font-weight: bold;
-    color: var(--dark);
-}
-
-.logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: var(--dark);
-    color: var(--yellow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.header h1 {
-    margin-top: 20px;
-    font-size: 26px;
-    color: var(--dark);
-}
-
-.header p {
-    margin-top: 5px;
-    font-size: 13px;
-    color: var(--dark);
-}
-
-.content {
-    padding: 20px;
-    flex: 1;
-}
-
-.steps {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 25px;
-}
-
-.step {
-    height: 6px;
-    flex: 1;
-    background: #e5e7eb;
-    border-radius: 10px;
-}
-
-.step.active {
-    background: var(--blue);
-}
-
-.card {
-    background: #f7f9fc;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 18px;
-    margin-bottom: 15px;
-}
-
-.label {
-    display: block;
-    font-size: 12px;
-    font-weight: bold;
-    color: #64748b;
-    margin-bottom: 7px;
-}
-
-.amount {
-    text-align: center;
-    font-size: 32px;
-    font-weight: bold;
-    color: var(--dark);
-    margin: 10px 0 15px;
-}
-
-input,
-select {
-    width: 100%;
-    padding: 14px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    background: #f8fafc;
-    font-size: 15px;
-    outline: none;
-}
-
-input:focus,
-select:focus {
-    border-color: var(--blue);
-    background: white;
-}
-
-input[type="range"] {
-    padding: 0;
-    border: none;
-    accent-color: var(--blue);
-}
-
-input[type="password"],
-input[type="text"] {
-    font-size: 15px;
-}
-
-.rate {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: 11px;
-    color: var(--gray);
-}
-
-.calc {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--gray);
-}
-
-.button {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 14px;
-    margin-top: 15px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.yellow {
-    background: var(--yellow);
-    color: var(--dark);
-}
-
-.blue {
-    background: var(--blue);
-    color: white;
-}
-
-.button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.hidden {
-    display: none;
-}
-
-.phone-box {
-    display: flex;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f8fafc;
-}
-
-.prefix {
-    padding: 14px;
-    background: #e8eefc;
-    color: var(--blue);
-    font-weight: bold;
-}
-
-.phone-box input {
-    border: none;
-    background: transparent;
-}
-
-.otp {
-    display: flex;
-    justify-content: center;
-    gap: 7px;
-    margin: 25px 0;
-}
-
-.otp input {
-    width: 42px;
-    height: 55px;
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.center {
-    text-align: center;
-}
-
-.icon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin: 10px auto 20px;
-    background: #eef3ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 36px;
-}
-
-.info {
-    background: #eef3ff;
-    color: var(--blue);
-    padding: 15px;
-    border-radius: 12px;
-    margin: 20px 0;
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-.summary {
-    line-height: 2;
-    color: var(--gray);
-}
-
-.summary b {
-    color: var(--dark);
-}
-
-.copyright {
-    text-align: center;
-    padding: 15px 20px;
-    font-size: 11px;
-    color: #9ca3af;
-    border-top: 1px solid #e5e7eb;
-    background: #f9fafb;
-    margin-top: auto;
-}
-
-.pin-input-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-top: 15px;
-}
-
-.pin-input-group input {
-    flex: 1;
-}
-
-.pin-toggle-btn {
-    padding: 12px 16px;
-    background: #e8eefc;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    color: var(--blue);
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.pin-toggle-btn:hover {
-    background: #d6e0f9;
-}
-
-.status-message {
-    display: none;
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    text-align: center;
-    background: #fef3c7;
-    color: #92400e;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+:root{--y:#FFCC00;--b:#00338D;--d:#041E42}
+body{background:#f5f7fb;min-height:100vh}
+.header{background:var(--y);padding:18px 16px;position:sticky;top:0;z-index:10}
+.top{display:flex;justify-content:space-between;align-items:center;font-weight:900;color:var(--d)}
+.brand{display:flex;align-items:center;gap:8px;font-size:20px}.brand i{width:32px;height:32px;background:var(--d);color:var(--y);border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal}
+.badge{font-size:10px;background:var(--d);color:white;padding:5px 10px;border-radius:20px}
+.header h1{font-size:22px;font-weight:900;color:var(--d);margin-top:12px}
+.header p{font-size:12px;opacity:.8}
+.container{max-width:600px;margin:0 auto;padding:16px}
+.steps{display:flex;gap:6px;margin-bottom:16px}.steps div{height:6px;flex:1;background:#e0e6f0;border-radius:10px}.steps div.on{background:var(--b)}
+.label{font-size:11px;font-weight:800;color:#5a6a85;text-transform:uppercase;margin-bottom:6px;display:block}
+.card{background:white;border:1px solid #e3e9f5;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.03)}
+.slider{width:100%;accent-color:var(--b);height:6px}
+.amount{font-size:34px;font-weight:900;color:var(--d);text-align:center;margin:8px 0}
+.rate{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#5a6a85;margin-top:8px}
+.select,.input{width:100%;padding:13px;border:2px solid #e3e9f5;border-radius:12px;background:#f1f4f9;font-size:15px;font-weight:600;outline:none;margin-top:6px}
+.select:focus,.input:focus{border-color:var(--b);background:white}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.otp{display:flex;gap:8px;justify-content:center;margin:18px 0}.otp input{width:48px;height:56px;text-align:center;font-size:20px;font-weight:900;border:2px solid #e3e9f5;border-radius:12px;background:white;outline:none}
+.otp input:focus{border-color:var(--b)}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:14px}
+.btn-y{background:var(--y);color:var(--d)}.btn-b{background:var(--b);color:white}.btn:disabled{opacity:.35}
+.hide{display:none}
+.success{text-align:center;padding:20px 0}
+.icon{width:84px;height:84px;background:var(--y);border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:38px}
+.calc{font-size:12px;color:#6b7a90;text-align:center;margin-top:8px;background:#f7f9fd;padding:8px;border-radius:10px}
 </style>
 </head>
 <body>
-<div class="frame">
+
 <div class="header">
-    <div class="brand">
-        <div class="logo">MTN</div>
-        Mobile Money
-    </div></div class="badge">ZAMBIA DEMO</div></div>
+<div class="top"><div class="brand"><i>MTN</i> MoMo Loan</div><div
+ class="badge">ZAMBIA QUICK LOAN</div></div>
 
     <h1 id="title">Loan Application</h1>
     <p id="subtitle">Apply for a loan up to ZMW 100,000</p>
